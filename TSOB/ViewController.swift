@@ -28,7 +28,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.pickerView.delegate = self
         
         // init data source
-        pickerDataSource.append(blockchain(name: "BTC block", id: 4, url: "https://webbtc.com/block/000000000000000001f942eb4bfa0aeccb6a14c268f4c72d5fff17270da771b9.hex"))
+        pickerDataSource.append(blockchain(name: "BTC first block", id: 1, url: "https://chain.api.btc.com/v3/block/1/tx"))
+        pickerDataSource.append(blockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/latest/tx"))
         
         // defaults
         self.playButton.isHidden = false
@@ -80,7 +81,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return pickerDataSource.count
+        return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -95,7 +96,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         let block = pickerDataSource[pickerView.selectedRow(inComponent: 0)]
         prepareAudioFromSelectedBlockchain(block: block)
     }
-    
     
     func prepareAudioFromSelectedBlockchain(block: blockchain)
     {

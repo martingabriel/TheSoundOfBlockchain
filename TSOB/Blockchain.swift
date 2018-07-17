@@ -31,7 +31,7 @@ class blockchain {
         }
     }
     
-    func createSound(data: Data) -> NSMutableData {
+    private func createSound(data: Data) -> NSMutableData {
         let sampleRate: Int32 = 44100
         let chunkSize: Int32 = 36
         let subChunkSize: Int32 = 16
@@ -68,7 +68,7 @@ class blockchain {
         return header
     }
     
-    func intToByteArray(_ i: Int32) -> [UInt8] {
+    private func intToByteArray(_ i: Int32) -> [UInt8] {
         return [
             //little endian
             UInt8(truncating: ((i     ) & 0xff) as NSNumber),
@@ -78,7 +78,7 @@ class blockchain {
         ]
     }
     
-    func shortToByteArray(_ i: Int16) -> [UInt8] {
+    private func shortToByteArray(_ i: Int16) -> [UInt8] {
         return [
             //little endian
             UInt8(truncating: ((i      ) & 0xff) as NSNumber),
