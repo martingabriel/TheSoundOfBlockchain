@@ -7,4 +7,5 @@ The Sound Of Blockchain is app that allows you to listen blockchain sound (or "b
 - Play sound data with AvAudioPlayer
 - Have fun
 
+
 This is personal project created in intention to learn Swift.
