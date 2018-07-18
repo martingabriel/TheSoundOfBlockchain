@@ -28,8 +28,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.pickerView.delegate = self
         
         // init data source
-        pickerDataSource.append(blockchain(name: "BTC first block", id: 1, url: "https://chain.api.btc.com/v3/block/1/tx"))
-        pickerDataSource.append(blockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/latest/tx"))
+        pickerDataSource.append(blockchain(name: "BTC first block", id: 1, url: "https://chain.api.btc.com/v3/block/1"))
+        pickerDataSource.append(blockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/latest"))
         
         // defaults
         self.playButton.isHidden = false
@@ -109,19 +109,23 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
                 }
                 
                 // download data and prepare audioplayer
-                let sound = block.getAudioFileFromUrl()
-                self.audioPlayer = try AVAudioPlayer(data: sound!)
-                self.audioPlayer.prepareToPlay()
-                
-                // stop animating loading
-                DispatchQueue.main.async {
-                    self.animateLoading(active: false)
+                if let sound = block.getAudioFileFromUrl() {
+                    self.audioPlayer = try AVAudioPlayer(data: sound)
+                    self.audioPlayer.prepareToPlay()
+                    
+                    // stop animating loading
+                    DispatchQueue.main.async {
+                        self.animateLoading(active: false)
+                    }
+                    
+                    // player active
+                    if (self.isPlaying) {
+                        self.audioPlayer.play()
+                    }
+                } else {
+                    
                 }
                 
-                // player active
-                if (self.isPlaying) {
-                    self.audioPlayer.play()
-                }
             } catch let error as NSError {
                 print(error.debugDescription)
                 print(block.Name)
