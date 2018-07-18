@@ -18,7 +18,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     
-    var pickerDataSource = [blockchain]()
+    var pickerDataSource = [Blockchain]()
     var audioPlayer: AVAudioPlayer!
     var isPlaying: Bool = false
     
@@ -28,8 +28,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.pickerView.delegate = self
         
         // init data source
-        pickerDataSource.append(blockchain(name: "BTC first block", id: 1, url: "https://chain.api.btc.com/v3/block/1"))
-        pickerDataSource.append(blockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/latest"))
+        pickerDataSource.append(BtcBlockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/"))
         
         // defaults
         self.playButton.isHidden = false
@@ -97,7 +96,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         prepareAudioFromSelectedBlockchain(block: block)
     }
     
-    func prepareAudioFromSelectedBlockchain(block: blockchain)
+    func prepareAudioFromSelectedBlockchain(block: Blockchain)
     {
         let queue = DispatchQueue(label: "DownloadQueue")
         
@@ -109,7 +108,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
                 }
                 
                 // download data and prepare audioplayer
-                if let sound = block.getAudioFileFromUrl() {
+                if let sound = block.GetAudioFileFromUrl() {
                     self.audioPlayer = try AVAudioPlayer(data: sound)
                     self.audioPlayer.prepareToPlay()
                     

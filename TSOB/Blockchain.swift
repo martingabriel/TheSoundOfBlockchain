@@ -8,12 +8,10 @@
 
 import Foundation
 
-class blockchain {
-    private var name = ""
-    private var id = 0
-    private var blockUrl = ""
-    private var blockHeight = 0
-    private var actualTxBlockUrl = ""
+class Blockchain {
+    internal var name = ""
+    internal var id = 0
+    internal var blockUrl = ""
     
     public var Name: String {
         return self.name
@@ -23,14 +21,11 @@ class blockchain {
         self.name = name
         self.id = id
         self.blockUrl = url
-        self.actualTxBlockUrl = blockUrl + "/tx"
-        // get block height
-        // get previous block height
     }
     
-    func getAudioFileFromUrl() -> Data? {
+    public func GetAudioFileFromUrl() -> Data? {
         do {
-            let dataFromUrl = try Data(contentsOf: URL(string: self.actualTxBlockUrl)!)
+            let dataFromUrl = try Data(contentsOf: URL(string: self.blockUrl)!)
             let sound = createSound(data: dataFromUrl)
             return sound as Data
         } catch let error as NSError {
@@ -39,7 +34,18 @@ class blockchain {
         }
     }
     
-    private func createSound(data: Data) -> NSMutableData {
+    public func getAudioFileFromUrl(url: String) -> Data? {
+        do {
+            let dataFromUrl = try Data(contentsOf: URL(string: url)!)
+            let sound = createSound(data: dataFromUrl)
+            return sound as Data
+        } catch let error as NSError {
+            print(error)
+            return nil
+        }
+    }
+    
+    internal func createSound(data: Data) -> NSMutableData {
         let sampleRate: Int32 = 44100
         let chunkSize: Int32 = 36
         let subChunkSize: Int32 = 16

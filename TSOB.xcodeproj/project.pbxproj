@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6B0DB4D520FE7AFA00412F5A /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 6B0DB4D420FE7AFA00412F5A /* readme.md */; };
+		6B0DB4D720FFAE1C00412F5A /* BtcBlockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0DB4D620FFAE1C00412F5A /* BtcBlockchain.swift */; };
 		6B150F6820D2E4650026959E /* Blockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B150F6720D2E4650026959E /* Blockchain.swift */; };
 		6B95EF9B20C8594B00C45F15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B95EF9A20C8594B00C45F15 /* AppDelegate.swift */; };
 		6B95EF9D20C8594B00C45F15 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B95EF9C20C8594B00C45F15 /* ViewController.swift */; };
@@ -37,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		6B0DB4D420FE7AFA00412F5A /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		6B0DB4D620FFAE1C00412F5A /* BtcBlockchain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BtcBlockchain.swift; sourceTree = "<group>"; };
 		6B150F6720D2E4650026959E /* Blockchain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blockchain.swift; sourceTree = "<group>"; };
 		6B95EF9720C8594B00C45F15 /* TSOB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TSOB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B95EF9A20C8594B00C45F15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				6B95EFA120C8594D00C45F15 /* Assets.xcassets */,
 				6B95EFA320C8594D00C45F15 /* LaunchScreen.storyboard */,
 				6B95EFA620C8594D00C45F15 /* Info.plist */,
+				6B0DB4D620FFAE1C00412F5A /* BtcBlockchain.swift */,
 			);
 			path = TSOB;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B95EF9D20C8594B00C45F15 /* ViewController.swift in Sources */,
+				6B0DB4D720FFAE1C00412F5A /* BtcBlockchain.swift in Sources */,
 				6B95EF9B20C8594B00C45F15 /* AppDelegate.swift in Sources */,
 				6B150F6820D2E4650026959E /* Blockchain.swift in Sources */,
 			);
