@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, AVAudioPlayerDelegate {
     
     @IBOutlet weak var pickerView: UIPickerView!
     @IBOutlet weak var playButton: UIButton!
@@ -18,9 +18,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     
+    let downloadQueue = DispatchQueue(label: "DownloadQueue")
+    
     var pickerDataSource = [Blockchain]()
     var audioPlayer: AVAudioPlayer!
-    var isPlaying: Bool = false
+    var audioPlayerData: Data?
+    var isPlayingActive: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,12 +31,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.pickerView.delegate = self
         
         // init data source
-        pickerDataSource.append(BtcBlockchain(name: "BTC last block", id: 2, url: "https://chain.api.btc.com/v3/block/"))
+        pickerDataSource.append(BtcBlockchain(name: "BTC last block", id: 1, url: "https://chain.api.btc.com/v3/block/"))
         
-        // defaults
-        self.playButton.isHidden = false
-        self.stopButton.isHidden = true
-        self.loading.isHidden = true
+        // default states
+        playButton.isHidden = false
+        stopButton.isHidden = true
+        loading.isHidden = true
         
         // init player and init first sound
         do {
@@ -46,24 +49,25 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        let string = pickerDataSource[row].Name
-        return NSAttributedString(string: string, attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
-    }
-
+    /// Play button touch
     @IBAction func playTouch(_ sender: Any) {
-        if (!isPlaying) {
-            audioPlayer.play()
-            isPlaying = true
+        if (!isPlayingActive) {
+            playAudioAndPrepareNext()
+            
+            isPlayingActive = true
             playButton.isHidden = true
             stopButton.isHidden = false
         }
     }
     
+    /// Stop button touch
     @IBAction func stopTouch(_ sender: Any) {
-        if (isPlaying) {
-            audioPlayer.stop()
-            isPlaying = false
+        if (isPlayingActive) {
+            if let player = audioPlayer {
+                player.stop()
+            }
+            
+            isPlayingActive = false
             playButton.isHidden = false
             stopButton.isHidden = true
         }
@@ -96,48 +100,70 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         prepareAudioFromSelectedBlockchain(block: block)
     }
     
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let string = pickerDataSource[row].Name
+        return NSAttributedString(string: string, attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
+    }
+    
+    /// Load audio from blockchain url and prepare player for playing
     func prepareAudioFromSelectedBlockchain(block: Blockchain)
     {
-        let queue = DispatchQueue(label: "DownloadQueue")
-        
-        queue.async {
-            do {
-                // animate loading
+        downloadQueue.async {
+            // animate loading
+            DispatchQueue.main.async {
+                self.animateLoading(active: true)
+            }
+            
+            // download data and prepare audioplayer
+            if let sound = block.GetAudioFileFromUrl() {
+                // store data from url
+                self.audioPlayerData = sound
+                
+                // stop animating loading
                 DispatchQueue.main.async {
-                    self.animateLoading(active: true)
+                    self.animateLoading(active: false)
                 }
                 
-                // download data and prepare audioplayer
-                if let sound = block.GetAudioFileFromUrl() {
-                    self.audioPlayer = try AVAudioPlayer(data: sound)
-                    self.audioPlayer.prepareToPlay()
-                    
-                    // stop animating loading
-                    DispatchQueue.main.async {
-                        self.animateLoading(active: false)
-                    }
-                    
-                    // player active
-                    if (self.isPlaying) {
-                        self.audioPlayer.play()
-                    }
-                } else {
-                    
-                }
-                
-            } catch let error as NSError {
-                print(error.debugDescription)
-                print(block.Name)
+                // player active
+                //if (self.isPlayingActive) {
+                //    self.audioPlayer.play()
+                //}
+            } else {
+                print("Cant load sound from url")
+                // show error - cant load audio file from url
             }
         }
     }
     
+    /// play audio from downloaded data and download next audio
+    func playAudioAndPrepareNext() {
+        do {
+            if let data = audioPlayerData {
+                audioPlayer = try AVAudioPlayer(data: data)
+                audioPlayer.delegate = self
+                audioPlayer.play()
+                prepareAudioFromSelectedBlockchain(block: pickerDataSource[0])
+            }
+            
+        } catch let error {
+            print(error)
+        }
+    }
+    
+    /// audioplayer finish playing of audio - prepare next
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if (isPlayingActive) {
+            playAudioAndPrepareNext()
+        }
+    }
+    
+    /// Animate loading on screen
     func animateLoading(active state: Bool) {
-        self.playButton.isUserInteractionEnabled = !state
-        self.loading.isHidden = !state
+        playButton.isUserInteractionEnabled = !state
+        loading.isHidden = !state
         
         // animate
-        state ? self.loading.startAnimating() : self.loading.stopAnimating()
+        state ? loading.startAnimating() : loading.stopAnimating()
     }
 }
 

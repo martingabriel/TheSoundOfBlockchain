@@ -11,7 +11,7 @@ import Foundation
 class BtcBlockchain : Blockchain {
     
     private var baseBlockUrl = ""
-    private var actualTxBlockUrl = ""
+    public var actualTxBlockUrl = ""
     private var previousTxBlockUrl = ""
     private var blockHeight = 0
     
@@ -30,12 +30,11 @@ class BtcBlockchain : Blockchain {
         self.blockUrl = blockUrl + "latest"
         self.actualTxBlockUrl = blockUrl + "/tx"
         
+        // get block height from block json
         if let height = getBlockHeight() {
             self.blockHeight = height
             print(height)
         }
-        
-        print(previousTxBlockUrl)
     }
     
     private func getBlockHeight() -> Int? {
@@ -54,6 +53,7 @@ class BtcBlockchain : Blockchain {
             result = block.data.height
         } catch let jsonErr {
             print(jsonErr)
+            result = nil
         }
         
         return result
@@ -68,6 +68,9 @@ class BtcBlockchain : Blockchain {
             print(self.actualTxBlockUrl)
             let dataFromUrl = try Data(contentsOf: url)
             let sound = createSound(data: dataFromUrl)
+            
+            self.previousTxBlockUrl = actualTxBlockUrl
+            self.actualTxBlockUrl = getActualBlockUrl()
             return sound as Data
         } catch let error as NSError {
             print(error)
@@ -75,4 +78,8 @@ class BtcBlockchain : Blockchain {
         }
     }
     
+    private func getActualBlockUrl() -> String {
+        self.blockHeight = self.blockHeight - 1
+        return baseBlockUrl + String(self.blockHeight) + "/tx"
+    }
 }
